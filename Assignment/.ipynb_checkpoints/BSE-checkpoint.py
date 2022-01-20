@@ -799,15 +799,11 @@ class Trader_PRZI(Trader):
 # PRZI-SHC pronounced "prezzy-shuck". Ticker symbol PRSH pronounced "purrsh".
 
 class Trader_PRZI_SHC(Trader):
-    
-    
-    #Addition for coursework
-    
-    kvalue=0
-    svalue=0
+
+
     # how to mutate the strategy values when hill-climbing
     def mutate_strat(self, s):
-        sdev = self.svalue
+        sdev = 0.05
         newstrat = s
         while newstrat == s:
             newstrat = s + random.gauss(0.0, sdev)
@@ -837,7 +833,7 @@ class Trader_PRZI_SHC(Trader):
         Trader.__init__(self, ttype, tid, balance, time)
         self.theta0 = 100           # threshold-function limit value
         self.m = 4                  # tangent-function multiplier
-        self.k = self.kvalue                  # number of hill-climbing points (cf number of arms on a multi-armed-bandit)
+        self.k = 4                  # number of hill-climbing points (cf number of arms on a multi-armed-bandit)
         self.strat_wait_time = 900  # how many secs do we give any one strat before switching? todo: make this randomized withn some range
         self.strat_range_min = 0.75 # lower-bound on randomly-assigned strategy-value
         self.strat_range_max = 0.75 # upper-bound on randomly-assigned strategy-value
@@ -863,7 +859,6 @@ class Trader_PRZI_SHC(Trader):
                 strategy = self.mutate_strat(self.strats[0]['stratval'])     # mutant of strats[0]
             self.strats.append({'stratval': strategy, 'start_t': start_time,
                                 'profit': profit, 'pps': profit_per_second, 'lut_bid': lut_bid, 'lut_ask': lut_ask})
-            
 
         if verbose:
             print("PRSH %s %s\n" % (tid, self.strat_str()))
@@ -1160,7 +1155,7 @@ class Trader_PRZI_SHC(Trader):
         # todo: add in other shc_algo that are cleverer than this,
         # e.g. inspired by multi-arm-bandit algos like like epsilon-greedy, softmax, or upper confidence bound (UCB)
 
-        verbose = True
+        verbose = False
 
         # first update each strategy's profit-per-second value -- this is the "fitness" of each strategy
         for s in self.strats:
